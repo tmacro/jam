@@ -1,1 +1,82 @@
-= jam
+= image:assets/logo.svg[Jam Jar Logo, 54, opts=inline] Jam | A cli tool for merging JSON and YAML files.
+:source-highlighter: rouge
+:rouge-style: monokai.sublime
+
+Jam is a simple, single (optional) dependency cli tool implemented in python which merges multiple JSON or YAML files into a single output document.
+It implements a local only `$ref` syntax inspired by JSON Schema that allows an input document to include other documents by path at merge time.
+
+[source, shell]
+----
+~/jam > cat base.yaml
+toplvlkey:
+  midlvlkey:
+    lowlvlkey: foo
+
+~/jam > cat overlay01.yaml
+toplvlkey:
+  midlvlkey:
+    lowlvlkey: bar
+
+  midlvlkey2:
+    $ref: ref01.yaml
+
+toplvlkey2: foo
+
+~/jam > cat ref01.yaml
+lowlvlkey3: foobar
+
+~/jam > jam -v -i base.yaml -i overlay01.yaml > output.yaml
+INFO::Merging document: base.yaml
+INFO::Merging document: overlay01.yaml
+INFO::Included reference: ref01.yaml
+INFO::  in: overlay01.yaml
+INFO::  resolved to: /home/jammy/jam/ref01.yaml
+
+~/jam > cat output.yaml
+toplvlkey:
+  midlvlkey:
+    lowlvlkey: bar
+  midlvlkey2:
+    lowlvlkey3: foobar
+toplvlkey2: foo
+----
+
+== Installing
+
+From Source
+
+[source, shell]
+----
+git clone https://github.com/tmacro/jam
+cd jam
+pip install --user .
+----
+
+If you need yaml support install the optional dependency PyYAML.
+
+[source, shell]
+----
+pip install --user .[yaml]
+----
+
+== Usage
+
+[source, shell]
+----
+usage: jam [-h] [-v] [--version] [-j] [-y] [--stdin] [ -i INPUT ] [ -o OUTPUT ]
+
+A cli tool for merging JSON and YAML files.
+
+options:
+  -h, --help                  show this help message and exit
+  -v, --verbose               Increase log verbosity. Can be passed multiple times.
+                              Defaults to errors only.
+  --version                   Print program version information.
+  --stdin                     Read input from stdin
+  -j, --json                  Force output in json format
+  -y, --yaml                  Force output in yaml format
+  -i INPUT, --input INPUT     Read input from path. Can be passed multiple times.
+                              Defaults to stdin.
+  -o OUTPUT, --output OUTPUT  Write merged output to path.
+                              Defaults to stdout.
+----
