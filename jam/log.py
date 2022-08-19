@@ -1,14 +1,11 @@
-import sys
-import pathlib
 import logging
-
-# logging.basicConfig()
+import pathlib
+import sys
 
 
 def formatter():
     return logging.Formatter(
-        fmt="%(asctime)s %(name)s %(levelname)s: %(message)s",
-        datefmt="%d.%m.%y %I:%M:%S %p",
+        fmt="%(levelname)s::%(message)s",
     )
 
 

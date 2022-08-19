@@ -1,6 +1,7 @@
 from collections.abc import Iterable, Mapping
 from itertools import chain, zip_longest
-from .util import is_mapping, is_iterable
+
+from .util import is_iterable, is_mapping
 
 
 def recurse_update(orig, new):

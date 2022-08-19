@@ -1,13 +1,14 @@
 from pathlib import Path
 
 from .constant import REF_TAG, STDIN
-from .log import log
-from .util import is_mapping, is_iterable, safe_read
 from .error import (
     ReferenceNotExistError,
     ReferenceResolutionError,
     ReferenceTypeMismatch,
 )
+
+from .log import log
+from .util import is_iterable, is_mapping, safe_read
 
 
 def _resolve_ref(parent_path, ref_path):

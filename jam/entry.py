@@ -12,21 +12,13 @@ from .error import JamError
 from .log import log
 from .merge import recurse_update
 from .reference import resolve_refs
-from .util import path_type, safe_read, safe_dump_yaml, safe_dump_json, has_yaml
+from .util import has_yaml, path_type, safe_dump_json, safe_dump_yaml, safe_read
 
 
 def get_args():
     parser = argparse.ArgumentParser(
         prog=pathlib.Path(sys.argv[0]).name,
-        description="A Python cli tool for merging JSON and YAML files.",
-    )
-
-    parser.add_argument(
-        "-c",
-        "--config",
-        default="~/.config/jam/jam.conf",
-        type=path_type,
-        help="Specify an alternate config file",
+        description="A cli tool for merging JSON and YAML files.",
     )
 
     parser.add_argument(
@@ -98,8 +90,6 @@ def cli():
     config = load_config(args)
     log.setLevel(config.loglvl)
 
-    # print(args)
-
     merged = None
     for path in config.input_paths:
         log.info(f"Merging document: {path.name}")
@@ -110,7 +100,7 @@ def cli():
         try:
             merged = recurse_update(merged, resolve_refs(path, doc))
         except JamError as e:
-            print(e)
+            log.exception('Unhandled Error')
             sys.exit(1)
 
     if args.output and args.output != "-":
@@ -137,7 +127,6 @@ def cli():
     elif args.input[0].suffix == ".yml":
         output_format = "yaml"
 
-    # print(output_format)
     if output_format == "yaml" and not has_yaml:
         log.error("Output format set to yaml but PyYaml not installed.")
         sys.exit(1)

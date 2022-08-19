@@ -3,7 +3,6 @@ from collections import namedtuple
 from .constant import LOG_LEVEL_MAP
 from .log import log
 
-
 JamConfig = namedtuple(
     "JamConfig",
     ["loglvl", "input_paths", "output_path"],

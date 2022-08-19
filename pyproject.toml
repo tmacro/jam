@@ -13,3 +13,6 @@ dev = ['PyYAML~=6.0', 'black>=22.6.0']
 
 [project.scripts]
 jam = "jam.entry:cli"
+
+[tool.setuptools]
+packages = ['jam']
