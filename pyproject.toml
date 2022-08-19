@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jam"
+version = "1.0.0"
+dependencies = []
+
+[project.optional-dependencies]
+yaml = ['PyYAML~=6.0']
+dev = ['PyYAML~=6.0', 'black>=22.6.0']
+
+[project.scripts]
+jam = "jam.entry:cli"
