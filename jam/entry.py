@@ -18,15 +18,7 @@ from .util import has_yaml, path_type, safe_dump_json, safe_dump_yaml, safe_read
 def get_args():
     parser = argparse.ArgumentParser(
         prog=pathlib.Path(sys.argv[0]).name,
-        description="A cli tool for merging JSON and YAML files.",
-    )
-
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="count",
-        default=0,
-        help="Increase log verbosity. Can be passed multiple times. Defaults to errors only.",
+        description="A cli for merging JSON and YAML files.",
     )
 
     parser.add_argument(
@@ -34,20 +26,11 @@ def get_args():
     )
 
     parser.add_argument(
-        "-i",
-        "--input",
-        action="append",
-        type=path_type,
-        help="Read input from path. Can be passed multiple times. Defaults to stdin.",
-    )
-
-    parser.add_argument(
-        "-o",
-        "--output",
-        action="store",
-        default=None,
-        type=path_type,
-        help="Write merged output to path. Defaults to stdout.",
+        "-v",
+        "--verbose",
+        action="count",
+        default=0,
+        help="Increase log verbosity. Can be passed multiple times.",
     )
 
     parser.add_argument(
@@ -64,7 +47,29 @@ def get_args():
         help="Force output in yaml format",
     )
 
-    parser.add_argument("--stdin", action="store_true", help="Read input from stdin")
+    parser.add_argument(
+        "--stdin",
+        action="store_true",
+        help='Read input from stdin. Convenience flag for "--input -"',
+    )
+
+    parser.add_argument(
+        "-i",
+        "--input",
+        action="append",
+        type=path_type,
+        default=[],
+        help="Read input from path. Can be passed multiple times.",
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        action="store",
+        default=None,
+        type=path_type,
+        help="Write merged output to this path.",
+    )
 
     args = parser.parse_args()
 
@@ -100,7 +105,7 @@ def cli():
         try:
             merged = recurse_update(merged, resolve_refs(path, doc))
         except JamError as e:
-            log.exception('Unhandled Error')
+            log.exception("Unhandled Error")
             sys.exit(1)
 
     if args.output and args.output != "-":
