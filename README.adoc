@@ -1,9 +1,16 @@
-= image:assets/logo.svg[Jam Jar Logo, 54, opts=inline] Jam | A cli tool for merging JSON and YAML files.
 :source-highlighter: rouge
 :rouge-style: monokai.sublime
+:toc: macro
+
+image::assets/hero.svg[JSON + YAML = Jam, 750, opts=inline, role=text-center]
+
+[discrete]
+== Jam | A cli tool for merging JSON and YAML files.
 
 Jam is a simple, single (optional) dependency cli tool implemented in python which merges multiple JSON or YAML files into a single output document.
 It implements a local only `$ref` syntax inspired by JSON Schema that allows an input document to include other documents by path at merge time.
+
+toc::[]
 
 [source, shell]
 ----
