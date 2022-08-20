@@ -35,6 +35,12 @@ dev: venv
 .PHONY: dev
 
 
+# Run test suite
+test: venv
+	$(WITH_VENV) pytest
+.PHONY: test
+
+
 # Build python package
 build: venv dist/%.tar.gz
 .PHONY: build
