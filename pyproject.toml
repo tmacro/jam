@@ -4,15 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jam-tool"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = []
 
 [project.optional-dependencies]
 yaml = ['PyYAML~=6.0']
-dev = ['PyYAML~=6.0', 'black>=22.6.0', 'bump2version>=1.0.1']
+dev = ['PyYAML~=6.0', 'black~=22.6.0', 'bump2version~=1.0.1', 'pytest~=7.1.2']
 
 [project.scripts]
 jam = "jam.entry:cli"
 
 [tool.setuptools]
 packages = ['jam']
+
+[tool.bumpver]
+current_version = "0.1.0"
+version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
+commit_message = "Release Jam v{new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
