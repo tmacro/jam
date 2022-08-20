@@ -9,7 +9,7 @@ dependencies = []
 
 [project.optional-dependencies]
 yaml = ['PyYAML~=6.0']
-dev = ['PyYAML~=6.0', 'black~=22.6.0', 'bump2version~=1.0.1', 'pytest~=7.1.2']
+dev = ['PyYAML~=6.0', 'black~=22.6.0', 'bumpver~=2022.1118', 'pytest~=7.1.2']
 
 [project.scripts]
 jam = "jam.entry:cli"
