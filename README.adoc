@@ -5,9 +5,9 @@
 image::assets/hero.svg[JSON + YAML = Jam, 750, opts=inline, role=text-center]
 
 [discrete]
-== Jam | A cli tool for merging JSON and YAML files.
+== Jam | A cli for merging JSON and YAML files.
 
-Jam is a simple, single (optional) dependency cli tool implemented in python which merges multiple JSON or YAML files into a single output document.
+Jam is a simple, single (optional) dependency cli implemented in python which merges multiple JSON or YAML files into a single output document.
 It implements a local only `$ref` syntax inspired by JSON Schema that allows an input document to include other documents by path at merge time.
 
 toc::[]
@@ -77,13 +77,10 @@ A cli tool for merging JSON and YAML files.
 options:
   -h, --help                  show this help message and exit
   -v, --verbose               Increase log verbosity. Can be passed multiple times.
-                              Defaults to errors only.
   --version                   Print program version information.
   --stdin                     Read input from stdin
   -j, --json                  Force output in json format
   -y, --yaml                  Force output in yaml format
   -i INPUT, --input INPUT     Read input from path. Can be passed multiple times.
-                              Defaults to stdin.
   -o OUTPUT, --output OUTPUT  Write merged output to path.
-                              Defaults to stdout.
 ----
