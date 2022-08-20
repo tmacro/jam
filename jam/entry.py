@@ -75,7 +75,7 @@ def get_args():
     if args.verbose > MAX_LOG_LEVEL:
         args.verbose = MAX_LOG_LEVEL
 
-    if args.stdin:
+    if args.stdin and STDIN not in args.input:
         args.input.append(STDIN)
 
     if not args.input:

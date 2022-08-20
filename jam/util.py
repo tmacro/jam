@@ -4,9 +4,12 @@ import pathlib
 from collections.abc import Iterable, Mapping
 
 from .log import log
+from .constant import STDIN
 
 
 def path_type(path):
+    if path == "-":
+        return STDIN
     return pathlib.Path(os.path.expanduser(path)).resolve()
 
 
