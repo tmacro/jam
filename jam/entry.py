@@ -17,6 +17,7 @@ from .util import has_yaml, path_type, safe_dump_json, safe_dump_yaml, safe_read
 
 path_type_w_stdin = partial(path_type, allow_stdin=True)
 
+
 def get_args():
     parser = argparse.ArgumentParser(
         prog=pathlib.Path(sys.argv[0]).name,
@@ -58,7 +59,7 @@ def get_args():
     )
 
     parser.add_argument(
-        'input',
+        "input",
         nargs="+",
         type=path_type_w_stdin,
         default=[],
@@ -69,7 +70,7 @@ def get_args():
         "-o",
         "--output",
         action="store",
-        default='/dev/stdout',
+        default="/dev/stdout",
         type=path_type,
         help="Write merged output to this path.",
     )
@@ -88,6 +89,7 @@ def get_args():
         return parser.parse_args(["--help"])
 
     return args
+
 
 def cli():
     args = get_args()

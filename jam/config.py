@@ -17,25 +17,27 @@ def get_loglvl(verbosity):
         return "debug"
     return loglvl.upper()
 
+
 def get_output_format(args):
     output_format = "json"
     # Explicit flags takes precedence
     if args.json:
-        return 'json'
+        return "json"
     if args.yaml:
-        return 'yaml'
+        return "yaml"
     # if no flags, base it on the output suffix
     if args.output.suffix in JSON_EXT:
-        return 'json'
+        return "json"
     if args.output.suffix in YAML_EXT:
-        return 'yaml'
+        return "yaml"
     # If outputting to stdout use the first input file
     if args.input[0].suffix in JSON_EXT:
-        return 'json'
+        return "json"
     if args.input[0].suffix in YAML_EXT:
-        return 'yaml'
+        return "yaml"
     # Default to json
-    return 'json'
+    return "json"
+
 
 def load_config(args):
     return JamConfig(

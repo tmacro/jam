@@ -77,6 +77,7 @@ def _resolve_list(parent_path, lst):
 def resolve_refs(parent_path, doc):
     # no reference resolution for stdin docs
     if parent_path == STDIN:
+        log.debug("Skipping ref resolution for stdin doc.")
         return doc
     if is_mapping(doc):
         return {k: v for k, v in _resolve_dict(parent_path, doc)}

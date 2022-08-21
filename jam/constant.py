@@ -11,6 +11,6 @@ STDIN = pathlib.Path("/dev/stdin")
 
 STDOUT = pathlib.Path("/dev/stdout")
 
-YAML_EXT = frozenset(['.yaml', '.yml'])
+YAML_EXT = frozenset([".yaml", ".yml"])
 
-JSON_EXT = frozenset(['.json'])
+JSON_EXT = frozenset([".json"])
