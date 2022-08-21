@@ -8,7 +8,7 @@ from .error import (
 )
 
 from .log import log
-from .util import is_iterable, is_mapping, safe_read
+from .util import is_listing, is_mapping, safe_read
 
 
 def _resolve_ref(parent_path, ref_path):
@@ -81,6 +81,6 @@ def resolve_refs(parent_path, doc):
     if is_mapping(doc):
         return {k: v for k, v in _resolve_dict(parent_path, doc)}
 
-    if is_iterable(doc):
+    if is_listing(doc):
         return [v for v in _resolve_list(parent_path, doc)]
     return doc

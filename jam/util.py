@@ -17,7 +17,7 @@ def is_mapping(data):
     return isinstance(data, Mapping)
 
 
-def is_iterable(data):
+def is_listing(data):
     return (
         not isinstance(data, str)
         and not isinstance(data, bytes)

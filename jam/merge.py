@@ -1,7 +1,7 @@
 from collections.abc import Iterable, Mapping
 from itertools import chain, zip_longest
 
-from .util import is_iterable, is_mapping
+from .util import is_listing, is_mapping
 
 
 def recurse_update(orig, new):
@@ -23,6 +23,6 @@ def recurse_update(orig, new):
             k: recurse_update(orig.get(k), new.get(k))
             for k in set(chain(orig.keys(), new.keys()))
         }
-    if is_iterable(orig) and is_iterable(new):
+    if is_listing(orig) and is_listing(new):
         return [recurse_update(o, n) for o, n in zip_longest(orig, new)]
     return new
