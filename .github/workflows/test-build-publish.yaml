@@ -1,4 +1,4 @@
-name: Publish new python release
+name: Test build and publish python release
 on:
   push:
     tags-ignore:

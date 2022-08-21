@@ -1,4 +1,4 @@
-name: Run test suite
+name: Publish Python Package
 
 on:
   - workflow_call
