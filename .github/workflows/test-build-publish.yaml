@@ -1,0 +1,20 @@
+name: Publish new python release
+on:
+  push:
+    tags-ignore:
+      - '*.*.*a*'
+      - '*.*.*b*'
+      - '*.*.*rc*'
+  workflow_dispatch: {}
+
+jobs:
+  tests:
+    uses: ./.github/workflows/run-tests.yaml
+
+  build:
+    uses: ./.github/workflows/build.yaml
+    needs: tests
+
+  publish:
+    uses: ./.github/workflows/build.yaml
+    needs: build
