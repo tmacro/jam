@@ -9,12 +9,12 @@ on:
 
 jobs:
   tests:
-    uses: ./.github/workflows/run-tests.yaml
+    uses: ./.github/workflows/test.yaml
 
   build:
     uses: ./.github/workflows/build.yaml
     needs: tests
 
   publish:
-    uses: ./.github/workflows/build.yaml
+    uses: ./.github/workflows/publish.yaml
     needs: build
