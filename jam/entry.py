@@ -103,7 +103,7 @@ def cli():
             log.exception("Unhandled Error")
             sys.exit(1)
 
-    if conf.output_format == "yaml":
+    if config.output_format == "yaml":
         safe_dump_yaml(output_file, merged)
     else:
         safe_dump_json(output_file, merged)
