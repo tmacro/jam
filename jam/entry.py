@@ -4,6 +4,7 @@ import logging
 import os
 import pathlib
 import sys
+from functools import partial
 
 from . import __version__ as jam_version
 from .config import load_config
@@ -14,6 +15,7 @@ from .merge import recurse_update
 from .reference import resolve_refs
 from .util import has_yaml, path_type, safe_dump_json, safe_dump_yaml, safe_read
 
+path_type_w_stdin = partial(path_type, allow_stdin=True)
 
 def get_args():
     parser = argparse.ArgumentParser(
@@ -48,26 +50,19 @@ def get_args():
     )
 
     parser.add_argument(
-        "--stdin",
-        action="store_true",
-        help='Read input from stdin. Convenience flag for "--input -"',
-    )
-
-    parser.add_argument(
-        "-i",
-        "--input",
-        action="append",
-        type=path_type,
+        'input',
+        nargs="+",
+        type=path_type_w_stdin,
         default=[],
-        help="Read input from path. Can be passed multiple times.",
+        help="Read input from one or more paths.",
     )
 
     parser.add_argument(
         "-o",
         "--output",
         action="store",
-        default=None,
-        type=path_type,
+        default='-',
+        type=path_type_w_stdin,
         help="Write merged output to this path.",
     )
 
@@ -80,20 +75,20 @@ def get_args():
     if args.verbose > MAX_LOG_LEVEL:
         args.verbose = MAX_LOG_LEVEL
 
-    if args.stdin and STDIN not in args.input:
-        args.input.append(STDIN)
-
     if not args.input:
         log.error("Must specify at least one input or pass --stdin.")
         return parser.parse_args(["--help"])
 
     return args
 
-
 def cli():
     args = get_args()
     config = load_config(args)
     log.setLevel(config.loglvl)
+
+    if config.output_format == "yaml" and not has_yaml:
+        log.error("Output format set to yaml but PyYaml not installed.")
+        sys.exit(1)
 
     merged = None
     for path in config.input_paths:
@@ -108,35 +103,7 @@ def cli():
             log.exception("Unhandled Error")
             sys.exit(1)
 
-    if args.output and args.output != "-":
-        output_file = args.output
-        log.info(f"Writing to {args.output}")
-    else:
-        output_file = STDOUT
-
-    output_format = "json"
-    if args.json:
-        output_format = "json"
-    elif args.yaml:
-        output_format = "yaml"
-    elif output_file.suffix == ".json":
-        output_format = "json"
-    elif output_file.suffix == ".yaml":
-        output_format = "yaml"
-    elif output_file.suffix == ".yml":
-        output_format = "yaml"
-    elif args.input[0].suffix == ".json":
-        output_format = "json"
-    elif args.input[0].suffix == ".yaml":
-        output_format = "yaml"
-    elif args.input[0].suffix == ".yml":
-        output_format = "yaml"
-
-    if output_format == "yaml" and not has_yaml:
-        log.error("Output format set to yaml but PyYaml not installed.")
-        sys.exit(1)
-
-    if output_format == "yaml":
+    if conf.output_format == "yaml":
         safe_dump_yaml(output_file, merged)
     else:
         safe_dump_json(output_file, merged)
