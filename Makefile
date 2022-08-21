@@ -4,7 +4,7 @@ ifndef VERBOSE
 V := @
 endif
 
-WITH_VENV := $(V)source .venv/bin/activate &&
+WITH_VENV := $(V). .venv/bin/activate &&
 PYTHON_SRC := $(shell find jam/ -type f -name '*.py')
 
 # Build python package
