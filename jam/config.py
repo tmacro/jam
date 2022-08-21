@@ -2,10 +2,11 @@ from collections import namedtuple
 
 from .constant import LOG_LEVEL_MAP, YAML_EXT, JSON_EXT
 from .log import log
+from .merge import strategy_map
 
 JamConfig = namedtuple(
     "JamConfig",
-    ["loglvl", "input_paths", "output_path", "output_format"],
+    ["loglvl", "input_paths", "output_path", "output_format", "array_strategy"],
 )
 
 
@@ -42,4 +43,5 @@ def load_config(args):
         input_paths=args.input,
         output_path=args.output,
         output_format=get_output_format(args),
+        array_strategy=strategy_map.get(args.array_strategy),
     )

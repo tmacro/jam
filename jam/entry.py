@@ -50,6 +50,14 @@ def get_args():
     )
 
     parser.add_argument(
+        "--array-strategy",
+        action="store",
+        choices=["replace", "extend", "merge"],
+        default="replace",
+        help='Set merge strategy for arrays. One of "replace", "extend", or "merge". Defaults to "replace"',
+    )
+
+    parser.add_argument(
         'input',
         nargs="+",
         type=path_type_w_stdin,
@@ -98,7 +106,9 @@ def cli():
             log.error(f"Failed to read input file {path}")
             sys.exit(1)
         try:
-            merged = recurse_update(merged, resolve_refs(path, doc))
+            merged = recurse_update(
+                merged, resolve_refs(path, doc), array_strat=config.array_strategy
+            )
         except JamError as e:
             log.exception("Unhandled Error")
             sys.exit(1)
