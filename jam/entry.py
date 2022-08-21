@@ -104,6 +104,6 @@ def cli():
             sys.exit(1)
 
     if config.output_format == "yaml":
-        safe_dump_yaml(output_file, merged)
+        safe_dump_yaml(config.output_file, merged)
     else:
-        safe_dump_json(output_file, merged)
+        safe_dump_json(config.output_file, merged)
