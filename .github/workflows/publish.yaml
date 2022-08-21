@@ -20,7 +20,7 @@ jobs:
           path: dist/
 
       - name: Publish packages
-        run: make publish-test
+        run: make -e publish-test
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
