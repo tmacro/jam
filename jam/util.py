@@ -22,6 +22,7 @@ def is_iterable(data):
         not isinstance(data, str)
         and not isinstance(data, bytes)
         and isinstance(data, Iterable)
+        and not is_mapping(data)
     )
 
 
