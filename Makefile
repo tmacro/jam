@@ -36,7 +36,7 @@ dev: venv
 
 
 # Run test suite
-test: venv
+test: dev
 	$(WITH_VENV) pytest
 .PHONY: test
 
