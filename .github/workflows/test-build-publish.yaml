@@ -2,7 +2,7 @@ name: Test build and publish python release
 on:
   push:
     tags-ignore:
-      - '*.*.*a*'
+      # - '*.*.*a*'
       - '*.*.*b*'
       - '*.*.*rc*'
   workflow_dispatch: {}
