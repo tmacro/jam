@@ -1,0 +1,12 @@
+name: Build Python package
+
+on:
+  - push
+
+jobs:
+  tests:
+    uses: ./.github/workflows/run-tests.yaml
+
+  build:
+    uses: ./.github/workflows/build.yaml
+    needs: tests
