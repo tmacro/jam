@@ -25,8 +25,11 @@ jobs:
           name: jam-tool-package
           path: dist/
 
+      - name: Setup venv
+        run: make venv
+
       - name: Publish packages
-        run: make -e publish-test
+        run: make -e publish
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
