@@ -54,7 +54,7 @@ publish: venv
 
 # Publish python package to PyPI test
 publish-test: venv
-	$(WITH_VENV) twine upload -r testpypi --non-interactive dist/*
+	$(WITH_VENV) twine upload -r testpypi --verbose --non-interactive dist/*
 .PHONY: publish-test
 
 
