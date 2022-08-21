@@ -1,7 +1,13 @@
 name: Publish Python Package
 
 on:
-  - workflow_call
+  workflow_call:
+    secrets:
+      TWINE_USERNAME:
+        required: true
+      TWINE_PASSWORD:
+        required: true
+
 
 jobs:
   publish:
