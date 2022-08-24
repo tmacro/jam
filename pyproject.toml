@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jam-tool"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = []
 
 [project.optional-dependencies]
@@ -18,7 +18,7 @@ jam = "jam.entry:cli"
 packages = ['jam']
 
 [tool.bumpver]
-current_version = "0.3.0"
+current_version = "0.4.0"
 version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
 commit_message = "Release Jam v{new_version}"
 commit = true
