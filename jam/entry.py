@@ -9,7 +9,13 @@ from functools import partial
 from . import __version__ as jam_version
 from .config import load_config
 from .constant import MAX_LOG_LEVEL, STDIN, STDOUT
-from .error import JamError
+from .error import (
+    JamError,
+    ReferenceNotExistError,
+    ReferenceResolutionError,
+    ReferenceTypeMismatch,
+    InvalidReferencedFile,
+)
 from .log import log
 from .merge import recurse_update
 from .reference import resolve_refs
@@ -107,13 +113,31 @@ def cli():
         if doc is None:
             log.error(f"Failed to read input file {path}")
             sys.exit(1)
+
         try:
             merged = recurse_update(
                 merged, resolve_refs(path, doc), array_strat=config.array_strategy
             )
-        except JamError as e:
+        except ReferenceResolutionError as e:
+            log.error("Encountered infinite loop resolving reference.")
+            log.error(f"  referenced path: {e.ref_path}")
+            log.error(f"  in: {e.parent_path}")
+            exit(126)
+        except ReferenceNotExistError as e:
+            log.error(f"Referenced path does not exist: {e.ref_path}")
+            if e.resolved_to:
+                log.error(f"  resolved to: {e.resolved_to}")
+            log.error(f"  in: {e.parent_path}")
+            exit(127)
+        except InvalidReferencedFile as e:
+            log.error(f"Error reading referenced path {e.ref_path}!")
+            if e.resolved_to:
+                log.error(f"  resolved to: {e.resolved_to}")
+            log.error(f"  in: {e.parent_path}")
+            exit(128)
+        except Exception:
             log.exception("Unhandled Error")
-            sys.exit(1)
+            exit(1)
 
     if config.output_format == "yaml":
         safe_dump_yaml(config.output_path, merged)
