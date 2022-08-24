@@ -59,7 +59,7 @@ publish-test: venv
 
 
 # Builds README and copies assets to build/
-docs: docs/README.html
+docs: docs/README.html docs/REFSPEC.html
 	$(V)mkdir -pv docs/assets
 	$(V)cp -rv assets/* docs/assets/
 .PHONY: docs
@@ -68,7 +68,7 @@ docs: docs/README.html
 # Uses nodemon to watch for README changes
 # Executes docs target on change
 docs-dev:
-	$(V)nodemon -e adoc -w ./README.adoc -x make docs
+	$(V)nodemon -e adoc -w . -x make docs
 .PHONY: docs-dev
 
 

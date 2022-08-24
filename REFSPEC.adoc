@@ -1,0 +1,85 @@
+= Reference Specification
+:source-highlighter: rouge
+:rouge-style: monokai.sublime
+
+Jam's `$ref` syntax is inspired by JSON Schema, but differs in that it only supports including local files.
+
+== Syntax
+
+A reference is specified with the following syntax:
+
+* YAML: `$ref: <file path>#<sub-document path>`
+* JSON: `{ "$ref": "<file path>#<sub-document path>" }`
+
+Both absolute and relative paths can be used.
+
+* `$ref: /tmp/foo.yaml`
+* `$ref: foo.yaml`
+* `$ref: ../foo.yaml`
+* `$ref: foo/bar.yaml`
+
+Relative paths are resolved by joining the given fragment with the file path that contains the reference.
+Reference resolution is currently not supported for input documents read from stdin.
+
+.Path resolution
+[cols="1,1,1"]
+|===
+
+|Including Path |Reference Fragment |Resolved Path
+
+|`/tmp/foo.yaml`
+|`bar.yaml`
+|`/tmp/bar.yaml`
+
+|`/tmp/foo.yaml`
+|`../bar.yaml`
+|`/bar.yaml`
+
+|===
+
+
+References can be nested in container data structures.
+
+.Object YAML
+[source, yaml]
+----
+myobject:
+    foo:
+        $ref: foo.yaml
+    bar:
+        $ref: bar.yaml
+----
+
+.Object JSON
+[source, json]
+----
+{
+    "myobject": {
+        "foo": {
+            "$ref": "foo.yaml"
+        },
+        "bar": {
+            "$ref": "bar.yaml"
+        }
+    }
+}
+----
+
+.Array YAML
+[source, yaml]
+----
+myarray:
+    - $ref: foo.yaml
+    - $ref: bar.yaml
+----
+
+.Array JSON
+[source, json]
+----
+{
+    "myobject": [
+        { "$ref": "foo.yaml" },
+        { "$ref": "bar.yaml" }
+    ]
+}
+----
