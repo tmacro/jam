@@ -5,83 +5,66 @@ from .error import (
     ReferenceNotExistError,
     ReferenceResolutionError,
     ReferenceTypeMismatch,
+    InvalidReferencedFile,
 )
 
 from .log import log
 from .util import is_listing, is_mapping, safe_read
+import queue
 
 
-def _resolve_ref(parent_path, ref_path):
+def is_reference(doc):
+    return is_mapping(doc) and doc.get(REF_TAG) is not None
+
+
+def resolve_reference_path(parent_path, fragment):
     parent_path = Path(parent_path)
-    ref_path = Path(ref_path)
+    fragment = Path(fragment)
 
-    if ref_path.is_absolute():
-        if not ref_path.exists():
-            log.error(f"Referenced absolute path does not exist {ref_path}")
-            log.error(f"  in: {parent_path}")
-            raise ReferenceNotExistError(ref_path, parent_path)
-        log.info(f"Included reference {ref_path}")
-        log.info(f"  in: {parent_path.name}")
-        import_path = ref_path
-
-    else:  # is relative path
-        try:
-            resolved = parent_path.parent.joinpath(ref_path)
-        except ValueError:
-            log.error(f"Referenced relative can not be resolved: {ref_path}")
-            log.error(f"  in: {parent_path}")
-            raise ReferenceResolutionError(ref_path, parent_path)
-        if not resolved.exists():
-            log.error(f"Referenced relative path does not exist: {ref_path}")
-            log.error(f"  resolved to: {resolved}")
-            log.error(f"  in: {parent_path}")
-            raise ReferenceNotExistError(ref_path, parent_path, resolved_to=resolved)
-        import_path = resolved
-        log.info(f"Included reference: {ref_path}")
-        log.info(f"  in: {parent_path.name}")
-        log.info(f"  resolved to: {resolved}")
-
-    imported = safe_read(import_path)
-    if imported is None:
-        log.error(f"Error reading referenced path {ref_path}!")
-        log.error(f"  in: {parent_path}")
-        raise JamError(f"Error reading referenced path {ref_path}")
-    return import_path, imported
+    if fragment.is_absolute():
+        return fragment
+    try:
+        return parent_path.parent.joinpath(fragment).resolve()
+    except RuntimeError:
+        raise ReferenceResolutionError(fragment, parent_path)
 
 
-def _resolve_dict(parent_path, dikt):
-    for key, value in dikt.items():
-        if key == REF_TAG:
-            imported_path, imported = _resolve_ref(parent_path, value)
-            if is_mapping(imported):
-                for _key, _value in _resolve_dict(imported_path, imported):
-                    yield _key, resolve_refs(imported_path, _value)
-            else:
-                log.error(f"Reference resolved to list, expected dict!")
-                log.error(f"  referenced path: {imported_path}")
-                log.error(f"  in: {parent_path}")
-                raise ReferenceTypeMismatch(imported_path, parent_path, "dict", "list")
-        else:
-            yield key, resolve_refs(parent_path, value)
+def read_reference(parent_path, fragment):
+    resolved_path = resolve_reference_path(parent_path, fragment)
+    if not resolved_path.exists():
+        raise ReferenceNotExistError(fragment, parent_path, resolved_to=resolved_path)
 
-
-def _resolve_list(parent_path, lst):
-    for value in lst:
-        if is_mapping(value) and value.get(REF_TAG) is not None:
-            imported_path, imported = _resolve_ref(parent_path, value.get(REF_TAG))
-            yield resolve_refs(imported_path, imported)
-        else:
-            yield resolve_refs(parent_path, value)
+    data = safe_read(resolved_path)
+    if data is None:
+        raise InvalidReferencedFile(fragment, parent_path, resolved_to=resolved_path)
+    return resolved_path, data
 
 
 def resolve_refs(parent_path, doc):
     # no reference resolution for stdin docs
     if parent_path == STDIN:
-        log.debug("Skipping ref resolution for stdin doc.")
+        log.warning("Skipping ref resolution for stdin doc.")
         return doc
+
+    if is_reference(doc):
+        # Check for other keys aside from $ref
+        if len(doc) == 1:
+            ref_path, data = read_reference(parent_path, doc[REF_TAG])
+            log.info(f"Included reference: {doc[REF_TAG]}")
+            log.info(f"  in: {parent_path.name}")
+            log.info(f"  resolved to: {ref_path}")
+            return resolve_refs(ref_path, data)
+        else:  # Falls through to generic mapping logic
+            log.warning(
+                "Ambiguous reference found. Document contains keys other than $ref. Skipping resolution."
+            )
+            log.warning(f"  referenced path: {doc[REF_TAG]}")
+            log.warning(f"  in: {parent_path}")
+
     if is_mapping(doc):
-        return {k: v for k, v in _resolve_dict(parent_path, doc)}
+        return {k: resolve_refs(parent_path, v) for k, v in doc.items()}
 
     if is_listing(doc):
-        return [v for v in _resolve_list(parent_path, doc)]
+        return [resolve_refs(parent_path, v) for v in doc]
+
     return doc

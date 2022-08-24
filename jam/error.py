@@ -24,3 +24,11 @@ class ReferenceTypeMismatch(JamError):
         self.parent_path = parent_path
         self.expected_type = expected
         self.got_type = got
+
+
+class InvalidReferencedFile(JamError):
+    def __init__(self, ref_path, parent_path, resolved_to=None):
+        super().__init__(f"Referenced file is invalid {ref_path}")
+        self.ref_path = ref_path
+        self.parent_path = parent_path
+        self.resolved_to = resolved_to
