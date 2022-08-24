@@ -2,18 +2,18 @@ name: Test build and publish python release
 on:
   push:
     tags-ignore:
-      # - '*.*.*a*'
+      - '*.*.*a*'
       - '*.*.*b*'
-      - '*.*.*rc*'
+      # - '*.*.*rc*'
   workflow_dispatch: {}
 
 jobs:
-  tests:
-    uses: ./.github/workflows/test.yaml
-
   build:
     uses: ./.github/workflows/build.yaml
-    needs: tests
+
+  tests:
+    uses: ./.github/workflows/test.yaml
+    needs: build
 
   publish:
     uses: ./.github/workflows/publish.yaml
