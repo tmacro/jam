@@ -28,6 +28,15 @@ def get_args():
     parser = argparse.ArgumentParser(
         prog=pathlib.Path(sys.argv[0]).name,
         description="A cli for merging JSON and YAML files.",
+        add_help=False,
+    )
+
+    parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="Show this help message and exit.",
     )
 
     parser.add_argument(
