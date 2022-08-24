@@ -18,8 +18,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install package
-        run: make dev
+      - uses: actions/download-artifact@v3
+        with:
+          name: jam-tool-package
+          path: dist/
+
+      - name: Setup venv
+        run: make venv-install
 
       - name: Run tests
         run: make test

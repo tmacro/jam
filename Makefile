@@ -22,12 +22,16 @@ all: build docs
 
 # Creates python virtual environment
 venv: .venv
+.PHONY: venv
 .venv:
 	$(V)mkdir -p .venv
 		$(V)python -m venv .venv
 	$(WITH_VENV) pip install --upgrade pip build twine
-.PHONY: venv
 
+# Install a built package in dist to the virutall environment
+venv-install: venv
+	$(WITH_VENV) pip install $(shell find dist/ -type f -name '*.whl')[dev]
+.PHONY: venv-install
 
 # Install package in editable mode with optional dev dependencies
 dev: venv
