@@ -2,6 +2,8 @@ name: Test and build on push
 
 on:
   push:
+    branches:
+      - '*'
     tags-ignore:
       - '*'
 
