@@ -1,6 +1,9 @@
+= Jam
+:showtitle!:
+:toc: macro
 :source-highlighter: rouge
 :rouge-style: monokai.sublime
-:toc: macro
+:prewrap!:
 
 image::assets/hero.svg[JSON + YAML = Jam, 750, opts=inline, role=text-center]
 
@@ -11,6 +14,16 @@ Jam is a simple, single (optional) dependency cli implemented in python which me
 It implements a local only `$ref` syntax inspired by JSON Schema that allows an input document to include other documents by path at merge time.
 
 toc::[]
+
+
+== Quickstart
+
+Install from PyPI with YAML support
+
+[source, shell]
+----
+pip install --user jam-tool[yaml]
+----
 
 [source, shell]
 ----
@@ -32,14 +45,12 @@ toplvlkey2: foo
 ~/jam > cat ref01.yaml
 lowlvlkey3: foobar
 
-~/jam > jam -v -i base.yaml -i overlay01.yaml > output.yaml
+~/jam > jam -v base.yaml overlay01.yaml | tee > output.yaml
 INFO::Merging document: base.yaml
 INFO::Merging document: overlay01.yaml
 INFO::Included reference: ref01.yaml
 INFO::  in: overlay01.yaml
 INFO::  resolved to: /home/jammy/jam/ref01.yaml
-
-~/jam > cat output.yaml
 toplvlkey:
   midlvlkey:
     lowlvlkey: bar
@@ -50,6 +61,20 @@ toplvlkey2: foo
 
 == Installing
 
+From PyPI
+
+[source, shell]
+----
+pip install --user jam-tool
+----
+
+If you need yaml support install the optional dependency PyYAML.
+
+[source, shell]
+----
+pip install --user jam-tool[yaml]
+----
+
 From Source
 
 [source, shell]
@@ -57,12 +82,7 @@ From Source
 git clone https://github.com/tmacro/jam
 cd jam
 pip install --user .
-----
-
-If you need yaml support install the optional dependency PyYAML.
-
-[source, shell]
-----
+# Or
 pip install --user .[yaml]
 ----
 
@@ -70,17 +90,22 @@ pip install --user .[yaml]
 
 [source, shell]
 ----
-usage: jam [-h] [-v] [--version] [-j] [-y] [--stdin] [ -i INPUT ] [ -o OUTPUT ]
+usage: jam [-h] [--version] [-v] [-j] [-y] [ --array-strategy <strategy> ] [ -o OUTPUT ] input [ input ... ]
 
-A cli tool for merging JSON and YAML files.
+A cli for merging JSON and YAML files.
+
+positional arguments:
+  input                 Read input from one or more paths.
 
 options:
-  -h, --help                  show this help message and exit
-  -v, --verbose               Increase log verbosity. Can be passed multiple times.
-  --version                   Print program version information.
-  --stdin                     Read input from stdin
-  -j, --json                  Force output in json format
-  -y, --yaml                  Force output in yaml format
-  -i INPUT, --input INPUT     Read input from path. Can be passed multiple times.
-  -o OUTPUT, --output OUTPUT  Write merged output to path.
+  -h, --help            Show this help message and exit
+  --version             Print program version information.
+  -v, --verbose         Increase log verbosity. Can be passed multiple times.
+  -j, --json            Force output in json format
+  -y, --yaml            Force output in yaml format
+  --array-strategy {replace,extend,merge}
+                        Set merge strategy for arrays. One of "replace", "extend", or "merge".
+                        Defaults to "replace"
+  -o OUTPUT, --output OUTPUT
+                        Write merged output to this path.
 ----
