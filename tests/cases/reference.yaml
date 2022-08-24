@@ -1,0 +1,120 @@
+- name: Simple string value inclusion
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+    - path: bar.yaml
+      content: 'bar'
+  expected:
+    foo: bar
+- name: Simple number value inclusion
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+    - path: bar.yaml
+      content: 1
+  expected:
+    foo: 1
+- name: Simple dict inclusion
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+    - path: bar.yaml
+      content:
+        bar: foobar
+  expected:
+    foo:
+      bar:
+        foobar
+- name: Simple array inclusion
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+    - path: bar.yaml
+      content:
+        bar:
+          - foobar
+          - foobaz
+  expected:
+    foo:
+      bar:
+        - foobar
+        - foobaz
+- name: Nested dict inclusion
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+    - path: bar.yaml
+      content:
+        bar:
+          $ref: baz.yaml
+    - path: baz.yaml
+      content:
+        baz: foobarbaz
+  expected:
+    foo:
+      bar:
+        baz: foobarbaz
+- name: Nested array inclusion
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+    - path: bar.yaml
+      content:
+        bar:
+          - $ref: baz.yaml
+    - path: baz.yaml
+      content:
+        baz:
+          - foo
+          - bar
+          - baz
+  expected:
+    foo:
+      bar:
+        - baz:
+            - foo
+            - bar
+            - baz
+- name: refs as array elements
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          - $ref: bar.yaml
+          - $ref: baz.yaml
+    - path: bar.yaml
+      content: bar
+    - path: baz.yaml
+      content: baz
+  expected:
+    foo:
+      - bar
+      - baz
+
+- name: reference not exist
+  root: foo.yaml
+  docs:
+    - path: foo.yaml
+      content:
+        foo:
+          $ref: bar.yaml
+  xfail: True

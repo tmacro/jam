@@ -1,0 +1,205 @@
+---
+
+- name: No overlay
+  docs:
+    - foo: bar
+  expected:
+    foo: bar
+
+# Dictionary merges
+- name: Simple replace
+  docs:
+    - foo: bar
+    - foo: baz
+  expected:
+    foo: baz
+- name: One level dict replace
+  docs:
+    - foo:
+        bar: foo
+    - foo:
+        bar: foobar
+  expected:
+    foo:
+      bar: foobar
+- name: Two level dict replace
+  docs:
+    - foo:
+        bar:
+          baz: foo
+    - foo:
+        bar:
+          baz: barfoo
+  expected:
+    foo:
+      bar:
+        baz: barfoo
+- name: One level dict merge
+  docs:
+    - foo:
+        bar: foo
+    - foo:
+        baz: foobar
+  expected:
+    foo:
+      bar: foo
+      baz: foobar
+- name: Two level dict merge
+  docs:
+    - foo:
+        bar:
+          baz: foo
+    - foo:
+        bar:
+          qux: barfoo
+  expected:
+    foo:
+      bar:
+        baz: foo
+        qux: barfoo
+
+# Array Merges
+# Replace Strategy
+- name: Simple array replace
+  docs:
+    - foo: [foo]
+    - foo: [baz]
+  expected:
+    foo: [baz]
+  array_strategy: replace
+- name: dict array replace
+  docs:
+    - foo:
+        bar: [foo]
+    - foo:
+        bar: [baz]
+  expected:
+    foo:
+      bar: [baz]
+  array_strategy: replace
+
+# Extend Strategy
+- name: Simple array extend
+  docs:
+    - foo: [foo]
+    - foo: [baz]
+  expected:
+    foo: [foo, baz]
+  array_strategy: extend
+- name: dict array extend
+  docs:
+    - foo:
+        bar: [foo]
+    - foo:
+        bar: [baz]
+  expected:
+    foo:
+      bar: [foo, baz]
+  array_strategy: extend
+
+- name: nested dict array extend
+  docs:
+    - foo:
+        bar:
+          - qux: foo
+    - foo:
+        bar:
+          - baz: bar
+  expected:
+    foo:
+      bar:
+        - qux: foo
+        - baz: bar
+  array_strategy: extend
+
+# Merge Strategy
+- name: array merge, 1 item each
+  docs:
+    - foo:
+        bar: [foo]
+    - foo:
+        bar: [baz]
+  expected:
+    foo:
+      bar: [baz]
+  array_strategy: merge
+- name: array merge, orig longer
+  docs:
+    - foo:
+        bar: [foo, bar]
+    - foo:
+        bar: [baz]
+  expected:
+    foo:
+      bar: [baz, bar]
+  array_strategy: merge
+- name: array merge, new longer
+  docs:
+    - foo:
+        bar: [foo, bar]
+    - foo:
+        bar: [bar, baz]
+  expected:
+    foo:
+      bar: [bar, baz]
+  array_strategy: merge
+- name: array of dicts, override orig
+  docs:
+    - foo:
+        bar:
+          - baz: foobar
+    - foo:
+        bar:
+          - baz: barfoo
+  expected:
+    foo:
+      bar:
+        - baz: barfoo
+  array_strategy: merge
+- name: array of dicts, add new key
+  docs:
+    - foo:
+        bar:
+          - baz: foobar
+    - foo:
+        bar:
+          - qux: barfoo
+  expected:
+    foo:
+      bar:
+        - baz: foobar
+          qux: barfoo
+  array_strategy: merge
+- name: array of dict with array, override orig
+  docs:
+    - foo:
+        bar:
+          - baz:
+              - qux: foobar
+    - foo:
+        bar:
+          - baz:
+              - qux: barfoo
+  expected:
+    foo:
+      bar:
+        - baz:
+            - qux: barfoo
+  array_strategy: merge
+- name: array of dict with array, add new key
+  docs:
+    - foo:
+        bar:
+          - baz:
+              - foo: foobar
+    - foo:
+        bar:
+          - baz:
+              - qux: barfoo
+  expected:
+    foo:
+      bar:
+        - baz:
+            - foo: foobar
+              qux: barfoo
+  array_strategy: merge
