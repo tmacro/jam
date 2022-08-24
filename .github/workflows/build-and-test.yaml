@@ -8,9 +8,9 @@ on:
       - '*'
 
 jobs:
-  tests:
-    uses: ./.github/workflows/test.yaml
-
   build:
     uses: ./.github/workflows/build.yaml
-    needs: tests
+
+  tests:
+    uses: ./.github/workflows/test.yaml
+    needs: build
